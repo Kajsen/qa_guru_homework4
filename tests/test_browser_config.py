@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from selene import browser, have, be
 from selenium.webdriver.chrome.options import Options
 import pytest
@@ -41,7 +43,14 @@ def test_fill_form(my_browser):
         ".react-datepicker__day--010:not(.react-datepicker__day--outside-month)"
     ).click()
     my_browser.element("#dateOfBirthInput").should(have.value("10 Jun 1990"))
-
+    my_browser.element("#subjectsInput").click().type("M")
+    my_browser.all(".subjects-auto-complete__option").element_by(
+        have.text("Math")
+    ).click()
+    browser.element("#uploadPicture").send_keys(
+        str(Path("picture.jpg").resolve())
+    )
+    my_browser.element("#currentAddress").type("My address")
     my_browser.element('label[for="hobbies-checkbox-1"]').click()
     my_browser.element("#state").should(be.clickable).click()
     my_browser.element("#react-select-3-option-0").click()
@@ -53,30 +62,19 @@ def test_fill_form(my_browser):
     my_browser.element("#example-modal-sizes-title-lg").should(
         have.text("Thanks for submitting the form")
     )
-    my_browser.element('//tr[td[text()="Student Name"]]/td[2]').should(
-        have.text("Test Test")
-    )
-    my_browser.element('//tr[td[text()="Student Email"]]/td[2]').should(
-        have.text("test@buba.com")
-    )
-    (
-        my_browser.element('//tr[td[text()="Gender"]]/td[2]').should(
-            have.text("Male")
+    browser.all(".table-responsive tbody tr td:nth-child(2)").should(
+        have.exact_texts(
+            "Test Test",
+            "test@buba.com",
+            "Male",
+            "1112223334",
+            "10 June,1990",
+            "Maths",
+            "Sports",
+            "picture.jpg",
+            "My address",
+            "NCR Delhi",
         )
-    )
-    my_browser.element('//tr[td[text()="Mobile"]]/td[2]').should(
-        have.text("1112223334")
-    )
-    (
-        my_browser.element('//tr[td[text()="Date of Birth"]]/td[2]').should(
-            have.text("10 June,1990")
-        )
-    )
-    my_browser.element('//tr[td[text()="Hobbies"]]/td[2]').should(
-        have.text("Sports")
-    )
-    my_browser.element('//tr[td[text()="State and City"]]/td[2]').should(
-        have.text("NCR Delhi")
     )
 
     # Close form with result
