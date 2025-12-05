@@ -1,0 +1,5 @@
+black==25.11.0
+flake8==7.3.0
+pytest==9.0.1
+selene==2.0.0
+
